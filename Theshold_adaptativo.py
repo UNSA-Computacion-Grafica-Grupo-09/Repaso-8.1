@@ -26,17 +26,35 @@ def Thresholding(image1):
 
 	h, w = img1.shape
 	#res = cv2.imread('thresh2.png', cv2.IMREAD_GRAYSCALE)
-	winsize=3
-	const=2
-	
+	winsize=11 #tamaño de la subventana para cada pixel
+	const=2 #constate
+
+
 	for i in range(h):
 	    for j in range(w):
-	        if(0 < img1[i][j] and img1[i][j]<=110):
-	            res[i][j]=0
-	        else:
-	            res[i][j]=255
+	    	y0=i-int(winsize/2)
+	    	y1=i+int(winsize/2)+1
+	    	x0=j-int(winsize/2)
+	    	x1=j+int(winsize/2)+1
 
-	#cv2.imshow('Sin celulas saludables',gray)
+	    	if y0 < 0:
+	    		y0 = 0
+	    	if y1 > h: #filas
+	    		y1 = h
+	    	if x0 < 0:
+	    		x0 = 0
+	    	if x1 > w:	#columnas
+	    		x1 = w
+	    	
+	    	block =img1[y0:y1, x0:x1]
+	    	#print(block)
+
+	    	threshold =np.mean(block)-const # sacamos el promedio de la sub ventana restado por la constante
+	    	if img1[i,j]<threshold:
+	    		res[i,j]=0
+	    	else:
+	    		res[i,j]=255
+
 
 	return res
 	#img_result = res #importante
@@ -48,9 +66,5 @@ def Thresholding(image1):
 imagen1 = cv2.imread("paper6.jpg")
 #imagen2 = cv2.imread("log_4.png")
 result = Thresholding(imagen1)
-cv2.imwrite("pruebathres2.png", result)
+cv2.imwrite("resThresAdaptativo.png", result)
 cv2.waitKey(0)  
-
-#operador_raiz('./img/' , 'thresh2.jpg')
-
- 
